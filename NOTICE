@@ -1,0 +1,17 @@
+NOTICE
+
+This product is a derivative work based on Pico CMS.
+
+Source: https://github.com/picocms/Pico
+License: MIT
+
+Original work Copyright (c) Gilbert Pellegrom and the Pico community.
+All upstream contributions are preserved in the git commit history of this repository.
+
+----
+
+Modifications and additions in this fork:
+Copyright (c) 2026 LLL Sdn Bhd / Leborn (https://github.com/leborn-dev)
+Released under the same MIT license as the original work.
+
+This fork is part of the Leborn initiative. See LEBORN.md for details.

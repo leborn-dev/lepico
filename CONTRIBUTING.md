@@ -207,3 +207,10 @@ Issues and pull requests labeled with `info: Information Needed` indicate that w
 Issues and pull requests, which are rather related to upstream projects (i.e. projects Pico depends on, like Twig), are additionally labeled with `info: Upstream`.
 
 When a issue or pull request isn't directly related to Pico's core, but the project as a whole, it is labeled with `info: Meta`. Issues labeled with `info: Website` are related to [Pico's website](http://picocms.org), however, in this case it is usually expedient to move the issue to the [`picocms.github.io` repo](https://github.com/picocms/picocms.github.io) instead. The same applies to the `info: Pico CMS for Nextcloud` label; these issues are related to [Pico CMS for Nextcloud](https://apps.nextcloud.com/apps/cms_pico).
+
+
+---
+
+## Leborn fork notice
+
+This project is now part of the [Leborn](https://github.com/leborn-dev) initiative. The general Leborn contribution guidelines also apply. See [`LEBORN.md`](./LEBORN.md).

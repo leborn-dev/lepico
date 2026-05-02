@@ -1,3 +1,7 @@
+> **Notice:** This is **LePico**, a [Leborn](https://github.com/leborn-dev) fork of Pico CMS. We are reviving this project for the AI era. See [`LEBORN.md`](./LEBORN.md) and [`NOTICE`](./NOTICE) for details.
+
+---
+
 > :exclamation: :exclamation: **END OF LIFE NOTICE** :exclamation: :exclamation:
 >
 > Development of Pico has stopped a very long time ago. **We strongly advise against using Pico for new websites.** You can keep using Pico for existing websites though, it has **no known security issues**. However, please note that you will ultimately run into issues, because Pico wasn't designed for modern PHP versions. You can try the last [`v3.0.0-alpha.2` release](https://github.com/picocms/Pico/releases/tag/v3.0.0-alpha.2), or use the [`pico-3.0` branch](https://github.com/picocms/Pico/tree/pico-3.0). They are as stable as the last "stable" releases, but just didn't make it through the release process before development was abandoned.
