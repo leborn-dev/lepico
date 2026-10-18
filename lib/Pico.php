@@ -137,6 +137,14 @@ class Pico
     protected $locked = false;
 
     /**
+     * Whether an unsupported legacy date format has already been reported
+     *
+     * @var bool
+     */
+    protected $dateFormatWarningLogged = false;
+
+
+    /**
      * List of loaded plugins
      *
      * @see Pico::getPlugins()
@@ -307,7 +315,7 @@ class Pico
      * Twig instance used for template parsing
      *
      * @see Pico::getTwig()
-     * @var Twig_Environment|null
+     * @var \Twig\Environment|null
      */
     protected $twig;
 
@@ -1507,6 +1515,18 @@ class Pico
                     $meta['date'] = '';
                 }
 
+                if (!empty($meta['time'])) {
+                    // YAML may preserve quoted timestamps as strings; the formatter
+                    // interprets those as date expressions unless normalized first.
+                    $timestamp = filter_var($meta['time'], FILTER_VALIDATE_INT);
+                    if ($timestamp === false) {
+                        throw new \Symfony\Component\Yaml\Exception\ParseException(
+                            'The Time header must be a UNIX timestamp within the PHP integer range'
+                        );
+                    }
+                    $meta['time'] = $timestamp;
+                }
+
                 if (empty($meta['time'])) {
                     $meta['time'] = strtotime($meta['date']) ?: '';
                 } elseif (empty($meta['date'])) {
@@ -1519,12 +1539,40 @@ class Pico
 
             if (empty($meta['date_formatted'])) {
                 if ($meta['time']) {
+                    $dateFormat = $this->getConfig('date_format');
+                    preg_match_all('/%%|(%[_#0^\-]?[EO][a-zA-Z])/', $dateFormat, $formatMatches);
+                    $unsupportedModifiers = array_unique(array_filter($formatMatches[1]));
+                    if ($unsupportedModifiers) {
+                        // ICU cannot infer libc locale-specific eras or alternative digits.
+                        // Preserve page rendering and the original date/time without inventing
+                        // a different representation; explicit Formatted Date takes precedence.
+                        $meta['date_formatted'] = '';
+                        if (!$this->dateFormatWarningLogged) {
+                            error_log(
+                                'LePico: Unsupported date_format modifiers: ' . implode(', ', $unsupportedModifiers)
+                                . '. Automatic date_formatted is omitted; page rendering continues. '
+                                . 'Preserve locale-specific output in the Formatted Date page header, or deliberately '
+                                . 'change date_format to a supported format such as %Y-%m-%d. See MIGRATING.md.'
+                            );
+                            $this->dateFormatWarningLogged = true;
+                        }
+                        return $meta;
+                    }
+
                     $encodingList = mb_detect_order();
                     if ($encodingList === array('ASCII', 'UTF-8')) {
                         $encodingList[] = 'Windows-1252';
                     }
 
-                    $rawFormattedDate = strftime($this->getConfig('date_format'), $meta['time']);
+                    // Preserve escaped percent signs and strftime's two-digit %D year;
+                    // the compatibility formatter otherwise expands %D to a four-digit year.
+                    $dateSegments = explode('%%', $dateFormat);
+                    foreach ($dateSegments as &$dateSegment) {
+                        $dateFormat = str_replace('%D', '%m/%d/%y', $dateSegment);
+                        $dateSegment = \PHP81_BC\strftime($dateFormat, $meta['time'], setlocale(LC_TIME, '0'));
+                    }
+                    unset($dateSegment);
+                    $rawFormattedDate = implode('%', $dateSegments);
                     $meta['date_formatted'] = mb_convert_encoding($rawFormattedDate, 'UTF-8', $encodingList);
                 } else {
                     $meta['date_formatted'] = '';
@@ -2095,19 +2143,19 @@ class Pico
      * @see https://twig.symfony.com/ Twig website
      * @see https://github.com/twigphp/Twig Twig on GitHub
      *
-     * @return Twig_Environment|null Twig template engine
+     * @return \Twig\Environment|null Twig template engine
      */
     public function getTwig()
     {
         if ($this->twig === null) {
             $twigConfig = $this->getConfig('twig_config');
 
-            $twigLoader = new Twig_Loader_Filesystem($this->getThemesDir() . $this->getTheme());
-            $this->twig = new Twig_Environment($twigLoader, $twigConfig);
+            $twigLoader = new \Twig\Loader\FilesystemLoader($this->getThemesDir() . $this->getTheme());
+            $this->twig = new \Twig\Environment($twigLoader, $twigConfig);
             $this->twig->addExtension(new PicoTwigExtension($this));
 
             if (!empty($twigConfig['debug'])) {
-                $this->twig->addExtension(new Twig_Extension_Debug());
+                $this->twig->addExtension(new \Twig\Extension\DebugExtension());
             }
 
             // register content filter
@@ -2115,7 +2163,7 @@ class Pico
             // this is the reason why we can't register this filter as part of PicoTwigExtension
             $pico = $this;
             $pages = &$this->pages;
-            $this->twig->addFilter(new Twig_SimpleFilter(
+            $this->twig->addFilter(new \Twig\TwigFilter(
                 'content',
                 function ($page) use ($pico, &$pages) {
                     if (isset($pages[$page])) {
@@ -2156,7 +2204,7 @@ class Pico
             'theme_url' => $this->getConfig('themes_url') . $this->getTheme(),
             'site_title' => $this->getConfig('site_title'),
             'meta' => $this->meta,
-            'content' => new Twig_Markup($this->content, 'UTF-8'),
+            'content' => new \Twig\Markup($this->content, 'UTF-8'),
             'pages' => $this->pages,
             'previous_page' => $this->previousPage,
             'current_page' => $this->currentPage,

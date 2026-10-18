@@ -1,0 +1,5 @@
+site_title: 'Fixture & site'
+base_url: http://localhost/
+rewrite_url: false
+debug: true
+timezone: UTC

@@ -1,6 +1,26 @@
 > **Notice:** This is **LePico**, a [Leborn](https://github.com/leborn-dev) fork of Pico CMS. We are reviving this project for the AI era. See [`LEBORN.md`](./LEBORN.md) and [`NOTICE`](./NOTICE) for details.
 
+LePico quick start
+------------------
+
+Use **PHP 8.2 or newer**, Composer 2, and the `dom`, `mbstring` and `intl` PHP extensions. This fork uses Twig 3 and Symfony YAML 7.4 LTS. The commands below install **this fork**; the upstream Pico instructions preserved below refer to separate, historical packages.
+
+```sh
+git clone https://github.com/leborn-dev/lepico.git
+cd lepico
+composer install --no-plugins --no-scripts
+php -S 127.0.0.1:8080
+```
+
+Open [http://127.0.0.1:8080/](http://127.0.0.1:8080/). The bundled minimal `themes/default` theme displays `content-sample/`. Visit `/?sub/page` for a nested page and `/?missing` for the sample HTTP 404 page. The PHP development server is for local use.
+
+To create your own site, copy `content-sample/` to `content/` and edit its Markdown files. Optionally copy `config/config.yml.template` to `config/config.yml` to change settings. No theme download or Composer plugin is needed for the starter site. For deployment, use a PHP-enabled web server with the repository's `.htaccess` rules or equivalent server configuration.
+
+Run the regression suite with `composer test` and dependency security checks with `composer audit`. See [the migration notes](MIGRATING.md) before upgrading an existing installation: PHP requirements, Twig extension classes and some legacy template syntax have changed.
+
 ---
+
+The following notice is preserved from upstream Pico and predates this fork's dependency migration. Its security statement does not describe the old dependency versions; use `composer audit` to check your installed dependencies.
 
 > :exclamation: :exclamation: **END OF LIFE NOTICE** :exclamation: :exclamation:
 >
@@ -33,7 +53,7 @@ Install
 
 Installing Pico is dead simple - and done in seconds! If you have access to a shell on your server (i.e. SSH access), we recommend using [Composer][]. If not, use a pre-bundled release. If you don't know what "SSH access" is, head over to the pre-bundled release. 😇
 
-Pico requires PHP 5.3.6+ and the PHP extensions `dom` and `mbstring` to be enabled.
+This fork requires PHP 8.2+ and the PHP extensions `dom`, `mbstring` and `intl` to be enabled. Use the LePico quick start above to install this fork.
 
 ### I want to use Composer
 

@@ -1,0 +1,6 @@
+# LePico starter theme. SPDX-License-Identifier: MIT
+api_version: 3
+twig_config:
+    autoescape: html
+    strict_variables: false
+    charset: utf-8

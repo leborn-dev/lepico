@@ -405,9 +405,9 @@ class DummyPlugin extends AbstractPicoPlugin
      * @param array|null &$nextPage     data of the next page
      */
     public function onCurrentPageDiscovered(
-        array &$currentPage = null,
-        array &$previousPage = null,
-        array &$nextPage = null
+        ?array &$currentPage = null,
+        ?array &$previousPage = null,
+        ?array &$nextPage = null
     ) {
         // your code
     }
@@ -495,9 +495,9 @@ class DummyPlugin extends AbstractPicoPlugin
      *
      * @see Pico::getTwig()
      *
-     * @param Twig_Environment &$twig Twig instance
+     * @param \Twig\Environment &$twig Twig instance
      */
-    public function onTwigRegistered(Twig_Environment &$twig)
+    public function onTwigRegistered(\Twig\Environment &$twig)
     {
         // your code
     }

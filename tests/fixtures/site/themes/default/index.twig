@@ -1,0 +1,14 @@
+<title>{{ meta.title }} | {{ site_title }}</title>
+<p id="subtitle">{{ meta.subtitle }}</p>
+<time>{{ meta.date_formatted }}</time>
+<main>{{ content }}</main>
+{{ '**Filtered**'|markdown }}
+{{ 'sub/page'|content }}
+{{ 'sub/page'|link }}
+{{ '%base_url%/asset.png'|url }}
+{{ pages|map('title')|join(',') }}
+{{ pages|sort_by('title')|map('title')|join(',') }}
+{{ pages(depthOffset=-1)|map('id')|join(',') }}
+{{ url_param('probe', 'int', 7) }}
+{{ form_param('probe', 'int', 8) }}
+{{ registered() }}
