@@ -1,2 +1,6 @@
 # This directory is meant to be empty
 *
+
+# Bundle the minimal starter theme; custom themes remain local.
+!default/
+!default/**
